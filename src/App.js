@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, Route, Routes, useMatch } from "react-router-dom";
+import { Link, Route, Routes, useMatch, useNavigate } from "react-router-dom";
 
 const Menu = () => {
   const padding = {
@@ -20,9 +20,10 @@ const Menu = () => {
   );
 };
 
-const AnecdoteList = ({ anecdotes }) => (
+const AnecdoteList = ({ anecdotes, notification }) => (
   <div>
     <h2>Anecdotes</h2>
+    <p>{notification}</p>
     <ul>
       {anecdotes.map((anecdote) => (
         <li key={anecdote.id}>
@@ -81,6 +82,8 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState("");
   const [info, setInfo] = useState("");
 
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
@@ -89,6 +92,11 @@ const CreateNew = (props) => {
       info,
       votes: 0,
     });
+    navigate("/");
+    props.setNotification(`a new anecdote ${content} created!`);
+    setTimeout(() => {
+      props.setNotification(null);
+    }, 5000);
   };
 
   return (
@@ -174,9 +182,19 @@ const App = () => {
       <h1>Software anecdotes</h1>
       <Menu />
       <Routes>
-        <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
+        <Route
+          path="/"
+          element={
+            <AnecdoteList anecdotes={anecdotes} notification={notification} />
+          }
+        />
         <Route path="/about" element={<About />} />
-        <Route path="/create" element={<CreateNew addNew={addNew} />} />
+        <Route
+          path="/create"
+          element={
+            <CreateNew addNew={addNew} setNotification={setNotification} />
+          }
+        />
         <Route
           path="/anecdotes/:id"
           element={<Anecdote individualAnecdote={individualAnecdote} />}
