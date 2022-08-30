@@ -86,6 +86,12 @@ const CreateNew = (props) => {
   // const [info, setInfo] = useState("");
   const info = useField("text");
 
+  const resetBtn = () => {
+    content.clear();
+    author.clear();
+    info.clear();
+  };
+
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -129,6 +135,7 @@ const CreateNew = (props) => {
         </div>
         <button type="submit">create</button>
       </form>
+      <button onClick={resetBtn}>reset</button>
     </div>
   );
 };
